@@ -23,6 +23,15 @@ type Session = {
 // Constants
 const PORT = 3000;
 
+// Uppkoppling mot databasen
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: "banksajt",
+  port: 3306
+});
+
 const app = express();
 
 // Middleware
@@ -34,6 +43,12 @@ function generateOTP() {
     // Generera en sexsiffrig numerisk OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
     return otp.toString();
+}
+
+// Send SQL Query to database
+async function query<T>(sql:string, params: any[]) {
+  const [result] = await pool.execute(sql, params)
+  return result as T;
 }
 
 // Din kod här. Skriv dina arrayer
