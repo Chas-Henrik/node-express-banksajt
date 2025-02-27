@@ -7,17 +7,17 @@ function CreateUserPage() {
 
     const handleSignUp = async () => {
       try {
-          const response = await axios.post('http://localhost:3000/users', {
-              username,
-              password,
-          });
-          console.log("response ok", response.data);
-          alert(`User ${response.data.user.username} created and account with balance ${response.data.account.amount} created`);
+        const response = await axios.post('http://localhost:3000/users', {
+            username,
+            password,
+        });
+        console.log("response ok", response.data);
+        alert(`User ${response.data.user.username} created and account with balance ${response.data.account.amount} created`);
       } catch (error) {
           console.error('Error:', error);
           alert('Fel användarnamn eller lösenord');
       }
-  };
+    };
 
   return (
     <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
