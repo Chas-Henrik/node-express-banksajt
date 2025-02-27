@@ -167,7 +167,10 @@ app.post("/me/accounts/transactions", async (req, res) => {
 
   try {
 
-    const authHeader = req.headers.authorization
+    const authHeader = req.headers.authorization;
+    const { amount } = req.body;
+
+    console.log("Amount", amount)
 
     if (authHeader && authHeader.startsWith("Bearer ")) {
       
@@ -181,15 +184,20 @@ app.post("/me/accounts/transactions", async (req, res) => {
       
       const userId = sessions[0].userId
 
-      const accounts : Account[] = await query<Account[]>(
+      const amounts : Account[] = await query<Account[]>(
         "SELECT amount FROM accounts WHERE userId = ?",
         [userId]
+      );
+
+      const currentAmount = amounts[0].amount
+      const newAmount = currentAmount + amount;
+
+      const accounts : Account[] = await query<Account[]>(
+        "UPDATE accounts SET amount = ? WHERE userId = ?",
+        [newAmount, userId]
       ); 
 
-      const amount = accounts[0].amount;
-      console.log(amount)
-
-      res.status(201).json(JSON.stringify({"amount": amount}));
+      res.status(201).json(JSON.stringify({"amount": newAmount}));
   } else {
     res.status(401).send("Missing or invalid token");
   }
