@@ -1,36 +1,23 @@
 import { useState } from 'react';
-
-
+import axios from 'axios';
 
 function CreateUserPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSignUp = async () => {
-
-        try {
-            const response = await fetch('http://localhost:3000/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password,
-                }),
-            });
-            if(response.ok) {
-                const data = await response.json();
-                console.log("response ok", data);
-                alert(`User ${data.user.username} created and account with balance ${data.account.balance} created`);
-            } else {
-                throw new Error('Fel användarnamn eller lösenord');
-            }
-        } catch (error) {
-            console.error('Error:', error)
-        }
-  
-    }
+      try {
+          const response = await axios.post('http://localhost:3000/users', {
+              username,
+              password,
+          });
+          console.log("response ok", response.data);
+          alert(`User ${response.data.user.username} created and account with balance ${response.data.account.amount} created`);
+      } catch (error) {
+          console.error('Error:', error);
+          alert('Fel användarnamn eller lösenord');
+      }
+  };
 
   return (
     <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
