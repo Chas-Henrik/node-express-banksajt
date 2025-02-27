@@ -19,7 +19,7 @@ function AccountPage() {
                 return;
             }
             
-            const response = await fetch('http://localhost:3000/me/account', {
+            const response = await fetch('http://localhost:3000/me/accounts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,9 +27,10 @@ function AccountPage() {
                 }
             });
             if(response.ok) {
-                const data = await response.json();
+                const dataJSON = await response.json();
+                const data = JSON.parse(dataJSON)
                 console.log('data', data);
-                setBalance(data.balance);
+                setBalance(data.amount);
             } else {
                 console.error('Error:', response);
             }
