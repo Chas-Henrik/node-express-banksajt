@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response} from 'express';
 import cors from 'cors';
 import mysql, { ResultSetHeader } from 'mysql2/promise'
 
@@ -16,7 +16,7 @@ type Account = {
 }
 
 type Session = {
-  id: number;
+  userId: number;
   token: string;
 }
 
@@ -118,13 +118,85 @@ app.post("/sessions", async (req, res) => {
     } else {
       token = sessions[0].token;
     }
-    console.log("token", token);
-
     res.status(201).json(JSON.stringify({token: token}));
     
   } catch(error) {
     console.log("Error creating session", error);
     res.status(500).send("Error creating session");
+  }
+});
+
+app.post("/me/accounts", async (req, res) => {
+
+  try {
+
+    const authHeader = req.headers.authorization
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      
+      const token = authHeader.split(" ")[1];
+      console.log("token", token)
+
+      const sessions : Session[] = await query<Session[]>(
+        "SELECT * FROM sessions WHERE token = ?",
+        [token]
+      );
+      
+      const userId = sessions[0].userId
+
+      const accounts : Account[] = await query<Account[]>(
+        "SELECT amount FROM accounts WHERE userId = ?",
+        [userId]
+      ); 
+
+      const amount = accounts[0].amount;
+      console.log(amount)
+
+      res.status(201).json(JSON.stringify({"amount": amount}));
+  } else {
+    res.status(401).send("Missing or invalid token");
+  }
+
+  } catch(error) {
+    console.log("Error fetching account", error);
+    res.status(500).send("Error fetching account");
+  }
+});
+
+app.post("/me/accounts/transactions", async (req, res) => {
+
+  try {
+
+    const authHeader = req.headers.authorization
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      
+      const token = authHeader.split(" ")[1];
+      console.log("token", token)
+
+      const sessions : Session[] = await query<Session[]>(
+        "SELECT * FROM sessions WHERE token = ?",
+        [token]
+      );
+      
+      const userId = sessions[0].userId
+
+      const accounts : Account[] = await query<Account[]>(
+        "SELECT amount FROM accounts WHERE userId = ?",
+        [userId]
+      ); 
+
+      const amount = accounts[0].amount;
+      console.log(amount)
+
+      res.status(201).json(JSON.stringify({"amount": amount}));
+  } else {
+    res.status(401).send("Missing or invalid token");
+  }
+
+  } catch(error) {
+    console.log("Error fetching account", error);
+    res.status(500).send("Error fetching account");
   }
 });
 
