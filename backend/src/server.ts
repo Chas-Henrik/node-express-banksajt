@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import mysql from 'mysql2/promise'
+import mysql, { ResultSetHeader } from 'mysql2/promise'
 
 // Data Types
 type User = {
@@ -18,6 +18,11 @@ type Account = {
 type Session = {
   id: number;
   token: string;
+}
+
+type RegisterResponse = {
+  user: User;
+  account: Account;
 }
 
 // Constants
@@ -58,9 +63,35 @@ const sessions: Session[] = [];
 
 // Din kod här. Skriv dina routes:
 
-// Registrera användare
-app.post('/users', async (req, res) => {
+// Skapa användare och lösenord i users-tabellen & account i accounts-tabellen
+app.post("/users", async (req, res) => {
+
   const { username, password } = req.body;
+  console.log(username, password);
+
+  try {
+    const result1: ResultSetHeader = await query<ResultSetHeader>(
+      "INSERT INTO users (username, password) VALUES (?, ?)",
+      [username, password]
+    );
+    const user = {id: result1.insertId, username: username, password: password};
+
+    const result2: ResultSetHeader = await query<ResultSetHeader>(
+      "INSERT INTO accounts (userId, amount) VALUES (?, ?)",
+      [user.id, 0]
+    );
+    const account = {id: result2.insertId, userId: user.id, amount: 0};
+    const result: RegisterResponse = {user: user, account: account};
+
+    console.log("User & Account created:");
+    console.log(result);
+
+    res.status(201).json(JSON.stringify(result));
+
+  } catch(error) {
+    console.log("Error creating user", error);
+    res.status(500).send("Error creating user");
+  }
 
 });
 
