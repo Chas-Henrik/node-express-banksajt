@@ -1,4 +1,4 @@
-import express, { Request, Response} from 'express';
+import express from 'express';
 import cors from 'cors';
 import mysql, { ResultSetHeader } from 'mysql2/promise'
 
@@ -55,11 +55,6 @@ async function query<T>(sql:string, params: any[]) {
   const [result] = await pool.execute(sql, params)
   return result as T;
 }
-
-// Din kod här. Skriv dina arrayer
-const users: User[] = []; 
-const accounts: Account[] = [];
-const sessions: Session[] = [];
 
 // Din kod här. Skriv dina routes:
 
