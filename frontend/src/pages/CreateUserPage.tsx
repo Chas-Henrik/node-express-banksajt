@@ -5,14 +5,16 @@ function CreateUserPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSignUp = async () => {
+    const handleSignUp = async (event: React.FormEvent) => {
+      event.preventDefault();
       try {
         const response = await axios.post('http://localhost:3000/users', {
             username,
             password,
         });
-        console.log("response ok", response.data);
-        alert(`User ${response.data.user.username} created and account with balance ${response.data.account.amount} created`);
+        const data = JSON.parse(response.data);
+        console.log("response ok", data);
+        alert(`User ${data.user.username} created and account with balance ${data.account.amount} created`);
       } catch (error) {
           console.error('Error:', error);
           alert('Fel användarnamn eller lösenord');

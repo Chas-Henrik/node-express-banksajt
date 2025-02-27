@@ -92,9 +92,41 @@ app.post("/users", async (req, res) => {
     console.log("Error creating user", error);
     res.status(500).send("Error creating user");
   }
-
 });
 
+// Logga in användare och skapa session
+app.post("/sessions", async (req, res) => {
+
+  const { username, password } = req.body;
+  console.log(username, password);
+
+  try {
+    const users = await query<User[]>("SELECT id FROM users WHERE username = ? AND password = ? ", [username, password]);
+    const user = users[0];
+    console.log("user", user);
+    console.log("id", user.id);
+
+    const sessions: Session[] = await query<Session[]>("SELECT * FROM sessions WHERE userId = ? ", [user.id]);
+    console.log("sessions", sessions);
+    let token;
+    if(sessions.length === 0) {
+      token = generateOTP();
+      await query<ResultSetHeader>(
+        "INSERT INTO sessions (userId, token) VALUES (?, ?)",
+        [user.id, token]
+      );
+    } else {
+      token = sessions[0].token;
+    }
+    console.log("token", token);
+
+    res.status(201).json(JSON.stringify({token: token}));
+    
+  } catch(error) {
+    console.log("Error creating session", error);
+    res.status(500).send("Error creating session");
+  }
+});
 
 // Starta servern
 app.listen(PORT, () => {
