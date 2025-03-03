@@ -193,10 +193,9 @@ app.post("/me/accounts/transactions", async (req, res) => {
       ); 
 
       res.status(201).json(JSON.stringify({"amount": newAmount}));
-  } else {
-    res.status(401).send("Missing or invalid token");
-  }
-
+    } else {
+      res.status(401).send("Missing or invalid token");
+    }
   } catch(error) {
     console.log("Error fetching account", error);
     res.status(500).send("Error fetching account");
