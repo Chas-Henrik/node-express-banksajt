@@ -27,8 +27,7 @@ function LoginPage() {
             });
             if (response.ok) {
                 alert("Login successful")
-                const dataJSON = await response.json();
-                const data = JSON.parse(dataJSON);
+                const data = await response.json();
                 console.log("data", data);
                 localStorage.setItem('token', data.token);
                 //Programmatic navigation to account page

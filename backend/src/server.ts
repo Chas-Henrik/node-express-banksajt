@@ -81,7 +81,7 @@ app.post("/users", async (req, res) => {
     console.log("User & Account created:");
     console.log(result);
 
-    res.status(201).json(JSON.stringify(result));
+    res.status(201).json(result);
 
   } catch(error) {
     console.log("Error creating user", error);
@@ -113,7 +113,7 @@ app.post("/sessions", async (req, res) => {
     } else {
       token = sessions[0].token;
     }
-    res.status(201).json(JSON.stringify({token: token}));
+    res.status(201).json({token: token});
     
   } catch(error) {
     console.log("Error creating session", error);
@@ -147,7 +147,7 @@ app.post("/me/accounts", async (req, res) => {
       const amount = accounts[0].amount;
       console.log(amount)
 
-      res.status(201).json(JSON.stringify({"amount": amount}));
+      res.status(201).json({amount: amount});
   } else {
     res.status(401).send("Missing or invalid token");
   }
@@ -192,7 +192,7 @@ app.post("/me/accounts/transactions", async (req, res) => {
         [newAmount, userId]
       ); 
 
-      res.status(201).json(JSON.stringify({"amount": newAmount}));
+      res.status(201).json({amount: newAmount});
     } else {
       res.status(401).send("Missing or invalid token");
     }

@@ -12,7 +12,7 @@ function CreateUserPage() {
             username,
             password,
         });
-        const data = JSON.parse(response.data);
+        const data = response.data;
         console.log("response ok", data);
         alert(`User ${data.user.username} created an account with balance ${data.account.amount} created`);
       } catch (error) {

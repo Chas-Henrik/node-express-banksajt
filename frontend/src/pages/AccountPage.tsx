@@ -27,8 +27,7 @@ function AccountPage() {
                 }
             });
             if(response.ok) {
-                const dataJSON = await response.json();
-                const data = JSON.parse(dataJSON)
+                const data = await response.json();
                 console.log('data', data);
                 setBalance(data.amount);
             } else {
@@ -58,8 +57,7 @@ function AccountPage() {
                 }),
             });
             if(response.ok) {
-                const dataJSON = await response.json();
-                const data = JSON.parse(dataJSON)
+                const data = await response.json();
                 alert(`Du har nu ${data.amount} kronor på ditt konto`);
                 fetchAccountBalance();
             } else {
